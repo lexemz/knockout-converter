@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Parcel</title>
+</head>
+
+<body>
+
+    <p>
+        Значение: <input data-bind="value: valueField,
+                                    event: {change: valueFieldChangeEvent}" /></p>
+    <p>
+        Тип значения:
+        <select data-bind="options: availableOperationsArray,
+                             value: selectedValueType,
+                             event: {change: optionsChangeEvent}"></select>
+    </p>
+    <p>Округлить до: 
+        <input data-bind="textInput: roundField" /> 
+        знаков после запятой
+        <button data-bind="click: roundButtonClick">round</button>
+    </p>
+    <p><button data-bind="click: submitButtonClick">save</button></p>
+
+    <!-- <script src="js/main.js"></script> -->
+    <script src="ts/main.ts"></script>
+</body>
+
+</html>
