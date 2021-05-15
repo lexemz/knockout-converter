@@ -12,19 +12,29 @@
 
     <p>
         Значение: <input data-bind="value: valueField,
-                                    event: {change: valueFieldChangeEvent}" /></p>
+                                    event: {change: valueFieldChangeEvent},
+                                    enable: valueFieldEnabler" /></p>
     <p>
         Тип значения:
         <select data-bind="options: availableOperationsArray,
                              value: selectedValueType,
-                             event: {change: optionsChangeEvent}"></select>
+                             event: {change: optionsChangeEvent},
+                             enable: selectEnabler"></select>
     </p>
-    <p>Округлить до: 
-        <input data-bind="textInput: roundField" /> 
+
+    <div data-bind="visible: roundBlockVisible">
+        Округлить до: 
+        <input data-bind="textInput: roundField,
+                             enable: roundFieldEnabler,
+                            visible: roundFieldVisible" /> 
         знаков после запятой
-        <button data-bind="click: roundButtonClick">round</button>
-    </p>
-    <p><button data-bind="click: submitButtonClick">save</button></p>
+        <button data-bind="click: roundButtonClick,
+                          enable: roundButtonEnabler,
+                          visible: roundButtonVisible">round</button>
+    </div>
+
+    <p><button data-bind="click: submitButtonClick,
+                         enable: submitButtonEnabler">save</button></p>
 
     <!-- <script src="js/main.js"></script> -->
     <script src="ts/main.ts"></script>
