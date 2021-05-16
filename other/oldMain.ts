@@ -1,4 +1,4 @@
-import Converter from "./converter";
+import Converter from "../src/ts/converter";
 import * as ko from "knockout";
 
 const jsonValue = 10.3232;

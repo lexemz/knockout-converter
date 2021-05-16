@@ -1,24 +1,27 @@
+
+let testData = {
+    storage: "kph",
+    display: "mps",
+};
+
+const someData = JSON.stringify(testData);
+const value = 10.321;
+
+//// start program
 import Converter from "./converter";
 import * as ko from "knockout";
 
-const jsonValue = 10.321;
-const jsonValuePrintType = 'mps';
-const jsonValueStorageType = 'kph';
 
-// JSON PARESER HERE
-// storage: ..
-// display: ..
+const valueField: number = value; // сюда получаем значение
+const parameters = findJsonParameters(someData, "storage", 'display') // сюда получаем json
 
+const storedValueType: string = parameters[0]
+const displayedValueType: string = parameters[1]
 
-
-let valueField: number = jsonValue;
-let displayedValueType: string = jsonValuePrintType.toLowerCase();
-let storedValueType: string = jsonValueStorageType.toLowerCase();
+const myConverter = new Converter(displayedValueType);
+const myConverter2 = new Converter(storedValueType);
 
 function ViewModel() {
-    let myConverter = new Converter(displayedValueType);
-    let myConverter2 = new Converter(storedValueType);
-
     // массив доступных операций
     this.availableOperationsArray = myConverter.getAvalibleConvertRules();
     // значение в поле
@@ -31,6 +34,7 @@ function ViewModel() {
     ////////////////////////////////////////////////
     // слежка за свойством enable элементов формы //
     ////////////////////////////////////////////////
+
     this.valueFieldEnabler = ko.observable(1);
     this.selectEnabler = ko.observable(1);
     this.roundFieldEnabler = ko.observable(1);
@@ -40,19 +44,27 @@ function ViewModel() {
     /////////////////////////////////////////////////
     // слежка за свойством visible элементов формы //
     /////////////////////////////////////////////////
+
     this.roundBlockVisible = ko.observable(0);
     this.roundFieldVisible = ko.observable(0);
     this.roundButtonVisible = ko.observable(0);
 
+    /////////////////////////////////////////////////
+
     // функция проверяет, в одинаковой ли системе хранимое и отображаемое значение, если нет - элементы формы диактивируются
     this.diffStoredAndPrintedValues = function(): boolean {
-        let operationsArray = myConverter.getAvalibleConvertRules();
-        if (operationsArray.indexOf(storedValueType) == -1) {
+        let displayOperationsArray = myConverter.getAvalibleConvertRules();
+        let storageOperationsArray = myConverter2.getAvalibleConvertRules();
+        if (displayOperationsArray.indexOf(storedValueType) == -1 && 
+            storageOperationsArray.indexOf(displayedValueType) == -1) {
             this.valueFieldEnabler(0);
             this.selectEnabler(0);
             this.roundFieldEnabler(0);
             this.roundButtonEnabler(0);
             this.submitButtonEnabler(0);
+
+            this.valueField("Проверьте парамтры!");
+
             return true;
         }
         return false;
@@ -134,14 +146,47 @@ function ViewModel() {
             return;
         }
 
-        myConverter2 = new Converter(this.selectedValueType());
         let convData = myConverter2.convert(this.valueField(), storedValueType);
 
-        alert(`Перезапись JSON: ${this.valueField()} ${this.selectedValueType()}-> ${convData} ${storedValueType}`);
+        alert(`Перезапись JSON: ${this.valueField()} ${this.selectedValueType()} -> 
+                                 ${convData} ${storedValueType}`);
     }
+
+    /////////////////////////////////////////////////
 
     this.checkNonIntegerValue();
     this.diffStoredAndPrintedValues();
 };
 var viewModel = new ViewModel();
 ko.applyBindings(viewModel);
+
+function findJsonParameters(jsonData: any, priorityParameter = null, additionalParameter = null): string[] {
+    let data = JSON.parse(jsonData);
+    let priority = priorityParameter;
+    let additional = additionalParameter;
+
+    let availableParameters: string[] = [];
+    for (let prop in data) {
+        availableParameters.push(prop);
+    }
+
+    let returnedParameters: string[] =[];
+    if (availableParameters.includes(priority) && !availableParameters.includes(additional)) {
+        // has only priority
+        
+        returnedParameters.push(data[priority].toLowerCase())
+        returnedParameters.push(data[priority].toLowerCase())
+    } else if (availableParameters.includes(priority) && 
+        availableParameters.includes(additional)) {
+        // has priority and additional
+
+        returnedParameters.push(data[priority].toLowerCase())
+        returnedParameters.push(data[additional].toLowerCase())
+    } else {
+        // no parameters
+
+        returnedParameters.push('')
+        returnedParameters.push('')
+    }
+    return returnedParameters
+}
