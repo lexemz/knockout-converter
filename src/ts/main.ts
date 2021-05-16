@@ -1,7 +1,7 @@
 
 let testData = {
-    storage: "kph",
-    display: "mps",
+    storage: "millimeters",
+    // display: "meters",
 };
 
 const someData = JSON.stringify(testData);
@@ -18,12 +18,15 @@ const parameters = findJsonParameters(someData, "storage", 'display') // сюд�
 const storedValueType: string = parameters[0]
 const displayedValueType: string = parameters[1]
 
-const myConverter = new Converter(displayedValueType);
-const myConverter2 = new Converter(storedValueType);
+console.log(storedValueType, parameters[1])
+
+let storegedConverter = new Converter(storedValueType); /* не константа, потому что при перезаписи значения, 
+мы будем переопределять конвертер, так как значение, из которого нужно переводить, будет изменено */
+const displayedConverter = new Converter(displayedValueType);
 
 function ViewModel() {
     // массив доступных операций
-    this.availableOperationsArray = myConverter.getAvalibleConvertRules();
+    this.availableOperationsArray = displayedConverter.getAvalibleConvertRules();
     // значение в поле
     this.valueField = ko.observable(valueField);
     // дропдаун с типами
@@ -53,8 +56,8 @@ function ViewModel() {
 
     // функция проверяет, в одинаковой ли системе хранимое и отображаемое значение, если нет - элементы формы диактивируются
     this.diffStoredAndPrintedValues = function(): boolean {
-        let displayOperationsArray = myConverter.getAvalibleConvertRules();
-        let storageOperationsArray = myConverter2.getAvalibleConvertRules();
+        const displayOperationsArray = displayedConverter.getAvalibleConvertRules();
+        const storageOperationsArray = storegedConverter.getAvalibleConvertRules();
         if (displayOperationsArray.indexOf(storedValueType) == -1 && 
             storageOperationsArray.indexOf(displayedValueType) == -1) {
             this.valueFieldEnabler(0);
@@ -93,7 +96,7 @@ function ViewModel() {
     // события элементов формы //
     /////////////////////////////
 
-    // событие заполнения поля со главным значением
+    // событие заполнения поля с главным значением
     this.valueFieldChangeEvent  = function() {
         console.log("field edited");
 
@@ -112,7 +115,7 @@ function ViewModel() {
 
         this.diffStoredAndPrintedValues();
 
-        let convData = myConverter.convert(this.valueField(), this.selectedValueType());
+        const convData = displayedConverter.convert(this.valueField(), this.selectedValueType());
         this.valueField(convData);
     }
 
@@ -146,8 +149,9 @@ function ViewModel() {
             return;
         }
 
-        let convData = myConverter2.convert(this.valueField(), storedValueType);
-
+        storegedConverter = new Converter(this.selectedValueType()) // переопределние исходного типа значения (оно меняется)
+        const convData = storegedConverter.convert(this.valueField(), storedValueType)
+        
         alert(`Перезапись JSON: ${this.valueField()} ${this.selectedValueType()} -> 
                                  ${convData} ${storedValueType}`);
     }
