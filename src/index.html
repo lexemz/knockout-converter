@@ -13,13 +13,13 @@
     <p>
         Значение: <input data-bind="value: valueField,
                                     event: {change: valueFieldChangeEvent},
-                                    enable: valueFieldEnabler" /></p>
+                                   enable: valueFieldEnabler" /></p>
     <p>
         Тип значения:
         <select data-bind="options: availableOperationsArray,
                              value: selectedValueType,
                              event: {change: optionsChangeEvent},
-                             enable: selectEnabler"></select>
+                            enable: selectEnabler"></select>
     </p>
 
     <div data-bind="visible: roundBlockVisible">
@@ -30,7 +30,7 @@
         знаков после запятой
         <button data-bind="click: roundButtonClick,
                           enable: roundButtonEnabler,
-                          visible: roundButtonVisible">round</button>
+                         visible: roundButtonVisible">round</button>
     </div>
 
     <p><button data-bind="click: submitButtonClick,

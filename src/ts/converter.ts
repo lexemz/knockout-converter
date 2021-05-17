@@ -202,6 +202,7 @@ export default class Converter {
                     return (value / 3.6)
             }
         }
+
         function convertTemperature(value: number, valueType: string, newValueType: string): number {
             switch (newValueType) {
                 // перевод в Цельсии
@@ -236,6 +237,7 @@ export default class Converter {
                     break;
             }
         }
+
         function convertTime(value: number, valueType: string, newValueType: string): number {
             // приводим значение к минутам
             let valueInMinute;
@@ -284,5 +286,6 @@ export default class Converter {
                     return (valueInMinute / 525600)
             }
         }
+        
     }
 }
