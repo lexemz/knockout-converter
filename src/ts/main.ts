@@ -18,7 +18,8 @@ const parameters = findJsonParameters(someData, "storage", 'display') // сюд�
 const storedValueType: string = parameters[0]
 const displayedValueType: string = parameters[1]
 
-console.log(storedValueType, parameters[1])
+console.log(`хранимое -> ${storedValueType}, 
+отображаемое -> ${displayedValueType}`)
 
 let storegedConverter = new Converter(storedValueType); /* не константа, потому что при перезаписи значения, 
 мы будем переопределять конвертер, так как значение, из которого нужно переводить, будет изменено */
@@ -26,7 +27,7 @@ const displayedConverter = new Converter(displayedValueType);
 
 function ViewModel() {
     // массив доступных операций
-    this.availableOperationsArray = displayedConverter.getAvalibleConvertRules();
+    this.availableOperationsArray = displayedConverter.getAvalibleConvertRules(); 
     // значение в поле
     this.valueField = ko.observable(valueField);
     // дропдаун с типами
@@ -66,7 +67,7 @@ function ViewModel() {
             this.roundButtonEnabler(0);
             this.submitButtonEnabler(0);
 
-            this.valueField("Проверьте парамтры!");
+            this.valueField("Проверьте JSON!");
 
             return true;
         }
@@ -98,7 +99,7 @@ function ViewModel() {
 
     // событие заполнения поля с главным значением
     this.valueFieldChangeEvent  = function() {
-        console.log("field edited");
+        // console.log("field edited");
 
         this.diffStoredAndPrintedValues();
 
@@ -111,7 +112,7 @@ function ViewModel() {
 
     // событие выбора пункта из дропдауна
     this.optionsChangeEvent = function() {
-        console.log("option selected");
+        // console.log("option selected");
 
         this.diffStoredAndPrintedValues();
 
@@ -121,8 +122,8 @@ function ViewModel() {
 
     // событие нажатия на кнопку: round
     this.roundButtonClick = function () {
-        console.log("round clicked");
-        console.log(this.roundField());
+        // console.log("round clicked");
+        // console.log(this.roundField());
 
         if (this.diffStoredAndPrintedValues()) { return }
         if (this.roundField() == undefined) { return }
@@ -141,7 +142,7 @@ function ViewModel() {
 
     // событие нажания на кнопку: save
     this.submitButtonClick = function () {
-        console.log("save clicked");
+        // console.log("save clicked");
 
         if (this.diffStoredAndPrintedValues()) { return }
         if (isNaN(this.valueField())) {
@@ -152,12 +153,11 @@ function ViewModel() {
         storegedConverter = new Converter(this.selectedValueType()) // переопределние исходного типа значения (оно меняется)
         const convData = storegedConverter.convert(this.valueField(), storedValueType)
         
-        alert(`Перезапись JSON: ${this.valueField()} ${this.selectedValueType()} -> 
-                                 ${convData} ${storedValueType}`);
+        console.log(`Перезапись JSON: ${this.valueField()} ${this.selectedValueType()} -> 
+                 ${convData} ${storedValueType}`);
     }
 
-    /////////////////////////////////////////////////
-
+    // initial
     this.checkNonIntegerValue();
     this.diffStoredAndPrintedValues();
 };
