@@ -26,48 +26,49 @@ let storegedConverter = new Converter(storedValueType); /* не констант
 const displayedConverter = new Converter(displayedValueType);
 
 function ViewModel() {
+    var self = this;
     // массив доступных операций
-    this.availableOperationsArray = displayedConverter.getAvalibleConvertRules(); 
+    self.availableOperationsArray = displayedConverter.getAvalibleConvertRules(); 
     // значение в поле
-    this.valueField = ko.observable(valueField);
+    self.valueField = ko.observable(valueField);
     // дропдаун с типами
-    this.selectedValueType = ko.observable(displayedValueType);
+    self.selectedValueType = ko.observable(displayedValueType);
     // округление в поле
-    this.roundField = ko.observable();
+    self.roundField = ko.observable();
 
     ////////////////////////////////////////////////
     // слежка за свойством enable элементов формы //
     ////////////////////////////////////////////////
 
-    this.valueFieldEnabler = ko.observable(1);
-    this.selectEnabler = ko.observable(1);
-    this.roundFieldEnabler = ko.observable(1);
-    this.roundButtonEnabler = ko.observable(1);
-    this.submitButtonEnabler = ko.observable(1);
+    self.valueFieldEnabler = ko.observable(1);
+    self.selectEnabler = ko.observable(1);
+    self.roundFieldEnabler = ko.observable(1);
+    self.roundButtonEnabler = ko.observable(1);
+    self.submitButtonEnabler = ko.observable(1);
 
     /////////////////////////////////////////////////
     // слежка за свойством visible элементов формы //
     /////////////////////////////////////////////////
 
-    this.roundBlockVisible = ko.observable(0);
-    this.roundFieldVisible = ko.observable(0);
-    this.roundButtonVisible = ko.observable(0);
+    self.roundBlockVisible = ko.observable(0);
+    self.roundFieldVisible = ko.observable(0);
+    self.roundButtonVisible = ko.observable(0);
 
     /////////////////////////////////////////////////
 
     // функция проверяет, в одинаковой ли системе хранимое и отображаемое значение, если нет - элементы формы диактивируются
-    this.diffStoredAndPrintedValues = function(): boolean {
+    self.diffStoredAndPrintedValues = function(): boolean {
         const displayOperationsArray = displayedConverter.getAvalibleConvertRules();
         const storageOperationsArray = storegedConverter.getAvalibleConvertRules();
         if (displayOperationsArray.indexOf(storedValueType) == -1 && 
             storageOperationsArray.indexOf(displayedValueType) == -1) {
-            this.valueFieldEnabler(0);
-            this.selectEnabler(0);
-            this.roundFieldEnabler(0);
-            this.roundButtonEnabler(0);
-            this.submitButtonEnabler(0);
+            self.valueFieldEnabler(0);
+            self.selectEnabler(0);
+            self.roundFieldEnabler(0);
+            self.roundButtonEnabler(0);
+            self.submitButtonEnabler(0);
 
-            this.valueField("Проверьте JSON!");
+            self.valueField("Проверьте JSON!");
 
             return true;
         }
@@ -75,21 +76,21 @@ function ViewModel() {
     }
 
     // функция показывает и скрывает поле округления по необходимости
-    this.checkNonIntegerValue = function() {
+    self.checkNonIntegerValue = function() {
         function isInteger(num) {
             return (num ^ 0) === num;
           }
         // если число НЕ дробное
-        if (isInteger(this.valueField())) {
-            this.roundBlockVisible(0);
-            this.roundFieldVisible(0);
-            this.roundButtonVisible(0);
+        if (isInteger(self.valueField())) {
+            self.roundBlockVisible(0);
+            self.roundFieldVisible(0);
+            self.roundButtonVisible(0);
         }
         // если число дробное
-        if (!isInteger(this.valueField())) {
-            this.roundBlockVisible(1);
-            this.roundFieldVisible(1);
-            this.roundButtonVisible(1);
+        if (!isInteger(self.valueField())) {
+            self.roundBlockVisible(1);
+            self.roundFieldVisible(1);
+            self.roundButtonVisible(1);
         }
     }
 
@@ -98,68 +99,68 @@ function ViewModel() {
     /////////////////////////////
 
     // событие заполнения поля с главным значением
-    this.valueFieldChangeEvent  = function() {
+    self.valueFieldChangeEvent  = function() {
         // console.log("field edited");
 
-        this.diffStoredAndPrintedValues();
+        self.diffStoredAndPrintedValues();
 
         // приходящие данные от пользователя - это строка переводим в число
-        let valueField = +this.valueField();
-        this.valueField(valueField);
+        let valueField = +self.valueField();
+        self.valueField(valueField);
 
-        this.checkNonIntegerValue();
+        self.checkNonIntegerValue();
     }
 
     // событие выбора пункта из дропдауна
-    this.optionsChangeEvent = function() {
+    self.optionsChangeEvent = function() {
         // console.log("option selected");
 
-        this.diffStoredAndPrintedValues();
+        self.diffStoredAndPrintedValues();
 
-        const convData = displayedConverter.convert(this.valueField(), this.selectedValueType());
-        this.valueField(convData);
+        const convData = displayedConverter.convert(self.valueField(), self.selectedValueType());
+        self.valueField(convData);
     }
 
     // событие нажатия на кнопку: round
-    this.roundButtonClick = function () {
+    self.roundButtonClick = function () {
         // console.log("round clicked");
-        // console.log(this.roundField());
+        // console.log(self.roundField());
 
-        if (this.diffStoredAndPrintedValues()) { return }
-        if (this.roundField() == undefined) { return }
-        if (isNaN(this.roundField())) {
-            this.roundField("");
+        if (self.diffStoredAndPrintedValues()) { return }
+        if (self.roundField() == undefined) { return }
+        if (isNaN(self.roundField())) {
+            self.roundField("");
             return;
         }
 
-        console.log(typeof(this.roundField()));
-        console.log(this.valueField());
-        let roundetData = +this.valueField().toFixed(this.roundField());
-        this.valueField(roundetData);
-        this.checkNonIntegerValue(roundetData);
-        this.roundField("");
+        console.log(typeof(self.roundField()));
+        console.log(self.valueField());
+        let roundetData = +self.valueField().toFixed(self.roundField());
+        self.valueField(roundetData);
+        self.checkNonIntegerValue(roundetData);
+        self.roundField("");
     }
 
     // событие нажания на кнопку: save
-    this.submitButtonClick = function () {
+    self.submitButtonClick = function () {
         // console.log("save clicked");
 
-        if (this.diffStoredAndPrintedValues()) { return }
-        if (isNaN(this.valueField())) {
-            this.valueField(""); // очистка мусора из поля
+        if (self.diffStoredAndPrintedValues()) { return }
+        if (isNaN(self.valueField())) {
+            self.valueField(""); // очистка мусора из поля
             return;
         }
 
-        storegedConverter = new Converter(this.selectedValueType()) // переопределние исходного типа значения (оно меняется)
-        const convData = storegedConverter.convert(this.valueField(), storedValueType)
+        storegedConverter = new Converter(self.selectedValueType()) // переопределние исходного типа значения (оно меняется)
+        const convData = storegedConverter.convert(self.valueField(), storedValueType)
         
-        console.log(`Перезапись JSON: ${this.valueField()} ${this.selectedValueType()} -> 
+        console.log(`Перезапись JSON: ${self.valueField()} ${self.selectedValueType()} -> 
                  ${convData} ${storedValueType}`);
     }
 
     // initial
-    this.checkNonIntegerValue();
-    this.diffStoredAndPrintedValues();
+    self.checkNonIntegerValue();
+    self.diffStoredAndPrintedValues();
 };
 var viewModel = new ViewModel();
 ko.applyBindings(viewModel);
