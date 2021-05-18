@@ -1,6 +1,6 @@
 let testData = {
     storage: "millimeters",
-    // display: "meters",
+    display: "meters",
 };
 
 const someData = JSON.stringify(testData);
@@ -50,8 +50,6 @@ function ViewModel() {
     /////////////////////////////////////////////////
 
     self.roundBlockVisible = ko.observable(0);
-    self.roundFieldVisible = ko.observable(0);
-    self.roundButtonVisible = ko.observable(0);
 
     /////////////////////////////////////////////////
 
@@ -74,22 +72,15 @@ function ViewModel() {
         return false;
     }
 
-    // функция показывает и скрывает поле округления по необходимости
-    self.checkNonIntegerValue = function() {
+    self.checkNonIntegerValue = function(data) {
         function isInteger(num) {
             return (num ^ 0) === num;
-          }
-        // если число НЕ дробное
-        if (isInteger(self.valueField())) {
-            self.roundBlockVisible(0);
-            self.roundFieldVisible(0);
-            self.roundButtonVisible(0);
         }
-        // если число дробное
-        if (!isInteger(self.valueField())) {
-            self.roundBlockVisible(1);
-            self.roundFieldVisible(1);
-            self.roundButtonVisible(1);
+        if (isInteger(+data)) {
+            self.roundBlockVisible(0)
+        }
+        if (!isInteger(+data)) {
+            self.roundBlockVisible(1)
         }
     }
 
@@ -97,23 +88,15 @@ function ViewModel() {
     // события элементов формы //
     /////////////////////////////
 
-    // событие заполнения поля с главным значением
-    self.valueFieldChangeEvent  = function() {
-        // console.log("field edited");
-
+    // событие вызывается после каждого изменения поля
+    self.valueField.subscribe(function(newValue) {
         self.diffStoredAndPrintedValues();
-
-        // приходящие данные от пользователя - это строка переводим в число
-        let valueField = +self.valueField();
-        self.valueField(valueField);
-
-        self.checkNonIntegerValue();
-    }
+        self.checkNonIntegerValue(newValue);
+    })
 
     // событие выбора пункта из дропдауна
     self.optionsChangeEvent = function() {
         // console.log("option selected");
-
         self.diffStoredAndPrintedValues();
 
         const convData = displayedConverter.convert(self.valueField(), self.selectedValueType());
@@ -132,8 +115,8 @@ function ViewModel() {
             return;
         }
 
-        console.log(typeof(self.roundField()));
-        console.log(self.valueField());
+        // console.log(typeof(self.roundField()));
+        // console.log(self.valueField());
         let roundetData = +self.valueField().toFixed(self.roundField());
         self.valueField(roundetData);
         self.checkNonIntegerValue(roundetData);
@@ -158,8 +141,8 @@ function ViewModel() {
     }
 
     // initial
-    self.checkNonIntegerValue();
     self.diffStoredAndPrintedValues();
+    self.checkNonIntegerValue(self.valueField())
 };
 var viewModel = new ViewModel();
 ko.applyBindings(viewModel);

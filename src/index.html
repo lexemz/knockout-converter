@@ -11,8 +11,7 @@
 <body>
 
     <p>
-        Значение: <input data-bind="value: valueField,
-                                    event: {change: valueFieldChangeEvent},
+        Значение: <input data-bind="textInput: valueField,
                                    enable: valueFieldEnabler" /></p>
     <p>
         Тип значения:
@@ -25,12 +24,10 @@
     <div data-bind="visible: roundBlockVisible">
         Округлить до: 
         <input data-bind="textInput: roundField,
-                             enable: roundFieldEnabler,
-                            visible: roundFieldVisible" /> 
+                             enable: roundFieldEnabler" /> 
         знаков после запятой
         <button data-bind="click: roundButtonClick,
-                          enable: roundButtonEnabler,
-                         visible: roundButtonVisible">round</button>
+                          enable: roundButtonEnabler">round</button>
     </div>
 
     <p><button data-bind="click: submitButtonClick,
