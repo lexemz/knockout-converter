@@ -1,5 +1,5 @@
 {
-  "name": "testlib",
+  "name": "knockout-converter",
   "version": "1.0.0",
   "description": "",
   "main": "main.js",
@@ -13,5 +13,5 @@
   "devDependencies": {
     "parcel-bundler": "^1.12.5"
   },
-  "_id": "testlib@1.0.0"
+  "_id": "knockout-converter@1.0.0"
 }
