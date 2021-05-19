@@ -31,7 +31,7 @@ function ViewModel() {
     // значение в поле
     self.valueField = ko.observable(valueField);
     // дропдаун с типами
-    self.selectedValueType = ko.observable(displayedValueType);
+    self.selectedValueType = ko.observable(displayedConverter.getValueType());
     // округление в поле
     self.roundField = ko.observable();
 
@@ -117,7 +117,7 @@ function ViewModel() {
 
         // console.log(typeof(self.roundField()));
         // console.log(self.valueField());
-        let roundetData = +self.valueField().toFixed(self.roundField());
+        let roundetData = +(+self.valueField()).toFixed(self.roundField());
         self.valueField(roundetData);
         self.checkNonIntegerValue(roundetData);
         self.roundField("");
@@ -147,7 +147,7 @@ function ViewModel() {
 var viewModel = new ViewModel();
 ko.applyBindings(viewModel);
 
-function findJsonParameters(jsonData: any, priorityParameter = null, additionalParameter = null): string[] {
+function findJsonParameters(jsonData: any, priorityParameter = "storage", additionalParameter = "display"): string[] {
     let data = JSON.parse(jsonData);
     let priority = priorityParameter;
     let additional = additionalParameter;
